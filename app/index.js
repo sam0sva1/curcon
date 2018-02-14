@@ -1,9 +1,7 @@
 import React from 'react';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import Home from './screens/Home';
-import CurrencyList from './screens/CurrencyList';
-import Options from './screens/Options';
-import Themes from './screens/Themes';
+
+import Navigator from './config/routes';
 
 EStyleSheet.build({
   $primeryBlue: '#4F6D7A',
@@ -21,4 +19,4 @@ EStyleSheet.build({
 });
 
 
-export default () => <Themes />;
+export default () => <Navigator />;

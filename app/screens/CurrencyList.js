@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Text, FlatList, View, StatusBar } from 'react-native';
+import PropTypes from 'prop-types';
+import { FlatList, View, StatusBar } from 'react-native';
 
 import { ListItem, Separator } from '../components/List';
 import currenciesArray from '../data/currencies';
@@ -7,8 +8,14 @@ import currenciesArray from '../data/currencies';
 const TEMP_CURRENT_CURRENCY = 'CAD';
 
 class CurrencyList extends Component {
+  static propTypes = {
+    navigation: PropTypes.shape({
+      goBack: PropTypes.func,
+    }),
+  }
+
   handlePress = () => {
-    console.log('handle press');
+    this.props.navigation.goBack(null);
   }
 
   render() {

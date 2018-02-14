@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { ScrollView, StatusBar } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+
+import { ListItem, Separator } from '../components/List';
+
 
 const styles = EStyleSheet.create({
   $blue: '$primeryBlue',
@@ -9,12 +13,15 @@ const styles = EStyleSheet.create({
   $purple: '$primeryPurple',
 });
 
-import { ListItem, Separator } from '../components/List';
-
-
 class Options extends Component {
-  handlerThemePress = (color) => {
-    console.log('handle theme', color);
+  static propTypes = {
+    navigation: PropTypes.shape({
+      goBack: PropTypes.func,
+    }),
+  }
+
+  handlerThemePress = () => {
+    this.props.navigation.goBack();
   }
 
   render() {
