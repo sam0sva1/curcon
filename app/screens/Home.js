@@ -12,21 +12,42 @@ import { Header } from '../components/Header';
 
 import { swapCurrency, changeCurrencyAmount } from '../actions/currencies';
 
-const TEMP_BASE_CURRENCY = 'USD';
-const TEMP_QUOTE_CURRENCY = 'RUB';
 const TEMP_BASE_PRICE = '100';
 const TEMP_QUOTE_PRICE = '5873';
 const TEMP_CONVERSION_RATE = 58.73;
 const TEMP_CONVERSION_DATE = new Date();
 
 
-@connect()
+const mapStateToProps = (state) => {
+  const { amount, baseCurrency, quoteCurrency, conversions } = state.currencies;
+  const conversionSelector = conversions[baseCurrency] || {};
+  const { isFetching } = conversionSelector;
+  const conversionRate = (conversionSelector.rates || {})[quoteCurrency] || 0;
+  const lastConvertedDate = conversionSelector.date ? new Date(conversionSelector.date) : new Date();
+
+  return {
+    amount,
+    baseCurrency,
+    quoteCurrency,
+    conversionRate,
+    isFetching,
+    lastConvertedDate,
+  };
+};
+
+@connect(mapStateToProps)
 class HomeScreen extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func,
     }),
     dispatch: PropTypes.func,
+    baseCurrency: PropTypes.string,
+    quoteCurrency: PropTypes.string,
+    amount: PropTypes.number,
+    conversionRate: PropTypes.number,
+    isFetching: PropTypes.bool,
+    lastConvertedDate: PropTypes.object,
   }
   handlePressBaseCurrency = () => {
     this.props.navigation.navigate('CurrencyList', { title: 'Base Currency' });
@@ -49,6 +70,12 @@ class HomeScreen extends Component {
   }
 
   render() {
+    const { baseCurrency, quoteCurrency, amount, conversionRate, isFetching, lastConvertedDate } = this.props;
+    let quotePrice = (amount * conversionRate).toFixed(2).toString();
+    if (isFetching) {
+      quotePrice = '...';
+    }
+
     return (
       <Container>
         <StatusBar translucent={false} barStyle="light-content" />
@@ -56,23 +83,23 @@ class HomeScreen extends Component {
         <KeyboardAvoidingView behavior="padding" >
           <Logo />
           <InputWithButton
-            buttonText={TEMP_BASE_CURRENCY}
+            buttonText={baseCurrency}
             onPress={this.handlePressBaseCurrency}
-            defaultValue={TEMP_BASE_PRICE}
+            defaultValue={String(amount)}
             keyboardType="numeric"
             onChangeText={this.handleChangeText}
           />
           <InputWithButton
-            buttonText={TEMP_QUOTE_CURRENCY}
+            buttonText={quoteCurrency}
             onPress={this.handlePressQuoteCurrency}
-            defaultValue={TEMP_QUOTE_PRICE}
+            defaultValue={quotePrice}
             editable={false}
           />
           <LastConterted
-            base={TEMP_BASE_CURRENCY}
-            quote={TEMP_QUOTE_CURRENCY}
-            date={TEMP_CONVERSION_DATE}
-            conversionRate={TEMP_CONVERSION_RATE}
+            base={baseCurrency}
+            quote={quoteCurrency}
+            date={lastConvertedDate}
+            conversionRate={conversionRate.toFixed(2)}
           />
           <ClearButton text="Reverse Currencies" onPress={this.handleSwapCurrency} />
         </KeyboardAvoidingView>
