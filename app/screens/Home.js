@@ -9,6 +9,7 @@ import { ClearButton } from '../components/Button';
 import { LastConterted } from '../components/Text';
 import { Header } from '../components/Header';
 
+import { swapCurrency, changeCurrencyAmount } from '../actions/currencies';
 
 const TEMP_BASE_CURRENCY = 'USD';
 const TEMP_QUOTE_CURRENCY = 'RUB';
@@ -33,6 +34,11 @@ class HomeScreen extends Component {
 
   handleSwapCurrency = () => {
     console.log('swap currency');
+    swapCurrency();
+  }
+
+  handleChangeText = (amount) => {
+    console.log(changeCurrencyAmount(amount));
   }
 
   handleOptionsPress = () => {
@@ -51,6 +57,7 @@ class HomeScreen extends Component {
             onPress={this.handlePressBaseCurrency}
             defaultValue={TEMP_BASE_PRICE}
             keyboardType="numeric"
+            onChangeText={this.handleChangeText}
           />
           <InputWithButton
             buttonText={TEMP_QUOTE_CURRENCY}
