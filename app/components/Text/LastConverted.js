@@ -15,7 +15,7 @@ LastConverted.propTypes = {
   date: PropTypes.shape({}),
   base: PropTypes.string,
   quote: PropTypes.string,
-  conversionRate: PropTypes.number,
+  conversionRate: PropTypes.string,
 };
 
 export default LastConverted;
