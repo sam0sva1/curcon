@@ -12,30 +12,7 @@ import { Header } from '../components/Header';
 
 import { swapCurrency, changeCurrencyAmount } from '../actions/currencies';
 
-const TEMP_BASE_PRICE = '100';
-const TEMP_QUOTE_PRICE = '5873';
-const TEMP_CONVERSION_RATE = 58.73;
-const TEMP_CONVERSION_DATE = new Date();
 
-
-const mapStateToProps = (state) => {
-  const { amount, baseCurrency, quoteCurrency, conversions } = state.currencies;
-  const conversionSelector = conversions[baseCurrency] || {};
-  const { isFetching } = conversionSelector;
-  const conversionRate = (conversionSelector.rates || {})[quoteCurrency] || 0;
-  const lastConvertedDate = conversionSelector.date ? new Date(conversionSelector.date) : new Date();
-
-  return {
-    amount,
-    baseCurrency,
-    quoteCurrency,
-    conversionRate,
-    isFetching,
-    lastConvertedDate,
-  };
-};
-
-@connect(mapStateToProps)
 class HomeScreen extends Component {
   static propTypes = {
     navigation: PropTypes.shape({
@@ -48,6 +25,7 @@ class HomeScreen extends Component {
     conversionRate: PropTypes.number,
     isFetching: PropTypes.bool,
     lastConvertedDate: PropTypes.object,
+    primeryColor: PropTypes.string,
   }
   handlePressBaseCurrency = () => {
     this.props.navigation.navigate('CurrencyList', { title: 'Base Currency', type: 'base' });
@@ -70,30 +48,32 @@ class HomeScreen extends Component {
   }
 
   render() {
-    const { baseCurrency, quoteCurrency, amount, conversionRate, isFetching, lastConvertedDate } = this.props;
+    const { baseCurrency, quoteCurrency, amount, conversionRate, isFetching, lastConvertedDate, primeryColor } = this.props;
     let quotePrice = (amount * conversionRate).toFixed(2).toString();
     if (isFetching) {
       quotePrice = '...';
     }
 
     return (
-      <Container>
+      <Container backgroundColor={primeryColor}>
         <StatusBar translucent={false} barStyle="light-content" />
         <Header onPress={this.handleOptionsPress} />
         <KeyboardAvoidingView behavior="padding" >
-          <Logo />
+          <Logo tintColor={primeryColor} />
           <InputWithButton
             buttonText={baseCurrency}
             onPress={this.handlePressBaseCurrency}
             defaultValue={String(amount)}
             keyboardType="numeric"
             onChangeText={this.handleChangeText}
+            textColor={primeryColor}
           />
           <InputWithButton
             buttonText={quoteCurrency}
             onPress={this.handlePressQuoteCurrency}
             defaultValue={quotePrice}
             editable={false}
+            textColor={primeryColor}
           />
           <LastConterted
             base={baseCurrency}
@@ -108,4 +88,25 @@ class HomeScreen extends Component {
   }
 }
 
-export default HomeScreen;
+const mapStateToProps = (state) => {
+  const {
+    currencies: { amount, baseCurrency, quoteCurrency, conversions },
+    theme: { primeryColor },
+  } = state;
+  const conversionSelector = conversions[baseCurrency] || {};
+  const { isFetching } = conversionSelector;
+  const conversionRate = (conversionSelector.rates || {})[quoteCurrency] || 0;
+  const lastConvertedDate = conversionSelector.date ? new Date(conversionSelector.date) : new Date();
+
+  return {
+    amount,
+    baseCurrency,
+    quoteCurrency,
+    conversionRate,
+    isFetching,
+    lastConvertedDate,
+    primeryColor,
+  };
+};
+
+export default connect(mapStateToProps)(HomeScreen);
