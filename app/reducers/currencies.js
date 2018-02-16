@@ -29,7 +29,7 @@ const setConvertions = (state, action) => {
   }
 
   return {
-    ...state,
+    ...state.conversions,
     [action.currency]: conversion,
   };
 };
