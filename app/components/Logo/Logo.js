@@ -18,6 +18,7 @@ class Logo extends Component {
     this.containerImageWidth = new Animated.Value(styles.$largeContainerSize);
     this.imageWidth = new Animated.Value(styles.$largeImageSize);
   }
+
   componentDidMount() {
     const showListener = (Platform.OS === 'android') ? 'keyboardDidShow' : 'keyboardWillShow';
     const hideListener = (Platform.OS === 'android') ? 'keyboardDidHide' : 'keyboardWillHide';
@@ -26,10 +27,11 @@ class Logo extends Component {
     this.keyboardHideListener = Keyboard.addListener(hideListener, this.keyboardHide);
   }
 
-  componentWillUpdate() {
+  componentWillUnmount() {
     this.keyboardShowListener.remove();
     this.keyboardHideListener.remove();
   }
+
 
   keyboardShow = () => {
     Animated.parallel([
